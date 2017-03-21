@@ -8,13 +8,17 @@
 	    			<!--start 边框样式-->
 	    			<home-border></home-border>
 					<!--地图-->
-	    			<home-map 
+	    		<home-map 
 						@checked="checked_parent"  
 						@checkedParent="checked_child">
 					</home-map>
 					<!--start 一级菜单-->
 					<div class="home-nav">
-						<div class="home-nav-item" v-for="(nav, key) in homeNavs" :class="[nav.background, {'active': nav.active}]" @click="homeNav_click(key)">
+						<div 
+							class="home-nav-item" 
+							v-for="(nav, key) in homeNavs" 
+							:class="[nav.background, {'active': nav.active}]" 
+							@click="homeNav_click(key)">
 							<span>{{ nav.title }}</span>
 						</div>
 					</div>
@@ -28,10 +32,10 @@
 						</div>
 					</div>
 	    			<!--hotspot 实时信息-->
-					<home-hotspot></home-hotspot>
-	    		</div>
+						<div :is="hotspot" :sort="sort"></div>
+					</div>	
 	    		<!--start 图表信息-->
-				<home-chart></home-chart>
+				  <div :is="echart" :sort="sort"></div>
 			</div>
 		</div>
 	</div>
@@ -41,16 +45,16 @@
 import homeBorder from './../component/home/home-border'
 import homeHeader from './../component/home/home-header'
 import homeMap from './../component/home/home-map'
-import homeChart from './../component/home/home-chart'
-import homeHotspot from './../component/home/home-hotspot'
+import homeHotspot from './../component/hotspot/home-hotspot'
+import homeChart from './../component/echart/home-chart'
 
 export default {
   name: 'home',
-  components: { homeBorder, homeHeader, homeMap, homeChart, homeHotspot },
+  components: { homeBorder, homeHeader, homeMap },
   data () {
     return {
       homeNavs: [
-        {title: '行政执法', background: 'back-6f7cd1', active: true},
+        {title: '行政执法', background: 'back-6f7cd1', active: false},
         {title: '客运车辆', background: 'back-3b3e64', active: false},
         {title: '货运车辆', background: 'back-c95c84', active: false},
         {title: '旅游包车', background: 'back-73a2dc', active: false},
@@ -60,7 +64,7 @@ export default {
       ],
       mapNavs: [
         [
-          {id: 'law_people', title: '执法人员', color: 'color-d85c60', checked: true},
+          {id: 'law_people', title: '执法人员', color: 'color-d85c60', checked: false},
           {id: 'law_vehicle', title: '执法车辆', color: 'color-e8a05dC', checked: false},
           {id: 'law_unit', title: '执法单位', color: 'color-d5d35f', checked: false}
         ],
@@ -70,14 +74,16 @@ export default {
         [{id: 'taxi', title: '出 租 车', color: 'color-e8a05d', checked: false}],
         [{id: 'training_vehicle', title: '驾培车辆', color: 'color-e8a05d', checked: false}],
         [{id: 'passenger_station', title: '客运场地', color: 'color-d5d35f', checked: false}]
-      ]
+      ],
+      hotspot: Object,
+      echart: Object,
+      sort: -1
     }
   },
-  watch: {
-    homeNavs (curVal, oldVal) {
-      console.log(1)
-      console.log(curVal, oldVal)
-    }
+  mounted () {
+    this.$nextTick(() => {
+      this.homeNav_click(0)
+    })
   },
   methods: {
     homeNav_click (key) {
@@ -86,8 +92,22 @@ export default {
       for (let id in this.mapNavs[key]) {
         this.mapNavs[key][id].checked = this.homeNavs[key].active
       }
+      // 点击/最高层
+      if (this.homeNavs[key].active) {
+        this.sort = key
+      } else {
+        for (let id in this.homeNavs) {
+          if (this.homeNavs[id].active) {
+            this.sort = parseInt(id)
+            return false
+          } else {
+            this.sort = -1
+          }
+        }
+      }
     },
     mapNav_click (key, id) {
+      this.host = this.homeNavs
       this.mapNavs[key][id].checked = !this.mapNavs[key][id].checked
     },
     checked_parent (checked) {
@@ -95,6 +115,18 @@ export default {
     },
     checked_child (fun) {
       fun(this.homeNavs)
+    }
+  },
+  watch: {
+    sort (curVal) {
+      this.hotspot = false
+      this.echart = false
+      if (curVal !== -1) {
+        setTimeout(() => {
+          this.hotspot = homeHotspot
+          this.echart = homeChart
+        })
+      }
     }
   }
 }

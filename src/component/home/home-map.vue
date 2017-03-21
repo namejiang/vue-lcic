@@ -20,11 +20,13 @@
         <!--历史轨迹时间选择-->
         <home-time></home-time>
         <!--车辆搜索-->
-        <div :is="search"
-            @search="search_on" 
-            @checked="checked_on" 
-            @homeNavs="homeNavs_on">
-        </div>
+        <keep-alive>
+          <div :is="search"
+              @search="search_on" 
+              @checked="checked_on" 
+              @homeNavs="homeNavs_on">
+          </div>
+        </keep-alive>
     </div>
 </template> 
 

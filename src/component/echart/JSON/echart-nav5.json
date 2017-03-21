@@ -1,0 +1,18 @@
+{
+    "nav": [
+        {"title": "驾校车辆", "active": false, "init":false},
+        {"title": "学员人数", "active": false, "init":false},
+        {"title": "驾培车", "active": false, "init":false}
+    ],
+    "body": [
+        [
+            {"id": "chart0", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}}
+        ],
+        [
+            {"id": "chart1", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}}
+        ],
+        [
+            {"id": "chart2", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "ring_series"}}
+        ]
+    ]
+}

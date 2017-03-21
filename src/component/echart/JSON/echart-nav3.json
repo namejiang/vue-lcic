@@ -1,0 +1,27 @@
+{
+    "nav": [
+        {"title": "经营权", "active": false, "init":false},
+        {"title": "等级评定", "active": false, "init":false},
+        {"title": "加班牌", "active": false, "init":false},
+        {"title": "包车牌", "active": false, "init":false}
+    ],
+    "body": [
+        [
+            {"id": "chart0", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}}
+        ],
+        [
+            {"id": "chart1", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}}
+        ],
+        [
+            {"id": "chart2", "time": false, "type": "column", "option": {"title": "title", "grid": "grid", "xAxis": "xAxis", "yAxis": "yAxis", "series": "column_series"}},
+            {"id": "chart3", "time": false, "type": "column", "option": {"title": "title", "grid": "grid", "xAxis": "xAxis", "yAxis": "yAxis", "series": "column_series"}},
+            {"id": "chart4", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}},
+            {"id": "chart5", "time": false, "type": "column", "option": {"title": "title", "grid": "grid", "xAxis": "xAxis", "yAxis": "yAxis", "series": "column_series"}}
+        ],[
+            {"id": "chart6", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}},
+            {"id": "chart7", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}},
+            {"id": "chart8", "time": false, "type": "column", "option": {"title": "title", "grid": "grid", "xAxis": "xAxis", "yAxis": "yAxis", "series": "column_series"}}
+
+        ]
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "nav": [
+        {"title": "执法数量", "active": false, "init":false},
+        {"title": "执法分析", "active": false, "init":false},
+        {"title": "客运班次", "active": false, "init":false}
+    ],
+    "body": [
+        [
+            {"id": "chart0", "time": false, "type": "column", "option": {"title": "title", "grid": "y_grid", "xAxis": "y_xAxis", "yAxis": "y_yAxis", "series": "column_series"}}
+        ],
+        [
+            {"id": "chart1", "time": false, "type": "column", "option": {"title": "title", "tooltip": "line_tooltip", "xAxis": "line_xAxis", "yAxis": "yAxis", "series": "column_series"}},
+            {"id": "chart2", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "inner_series"}}
+        ],
+        [
+            {"id": "chart3", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}}
+        ]
+    ]
+}

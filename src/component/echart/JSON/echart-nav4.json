@@ -1,0 +1,20 @@
+{
+    "nav": [
+        {"title": "人车绑定", "active": false, "init":false},
+        {"title": "运营公司", "active": false, "init":false},
+        {"title": "经营权", "active": false, "init":false},
+        {"title": "驾驶员", "active": false, "init":false}
+    ],
+    "body": [
+        [
+            {"id": "chart0", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}},
+            {"id": "chart1", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "area_series"}}
+        ],
+        [
+            {"id": "chart2", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}}
+        ],
+        [
+            {"id": "chart3", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}}
+        ]
+    ]
+}

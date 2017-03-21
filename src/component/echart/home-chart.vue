@@ -7,7 +7,7 @@
                 <ul>
                     <span class="state-left"></span>
                     <span class="state-right"></span>
-                    <li v-for="(nav, key) in chart_nav.nav" :class="{'active': nav.active}" @click="echart_click(key)"><span>{{ nav.title }}</span></li>
+                    <li v-for="(nav, key) in chart_nav.nav" :class="{'active': nav.active}" :init="[nav.init]" @click="echart_click(key)"><span>{{ nav.title }}</span></li>
                 </ul>
             </div>
             <div class="chart-box">
@@ -20,7 +20,7 @@
                                 <input type="text" id="time_end">
                             </span>
                         </span> 
-                        <div v-for="body in bodys" :id='body.id' :class="body.class"></div>
+                        <div v-for="body in bodys" :id='body.id'></div>
                     </li>
                 </ol>
                 <div class="overY">
@@ -32,73 +32,66 @@
 </template>
 
 <script>
-// import echarts from 'echarts'
+import echarts from 'echarts'
 import $ from 'jquery'
 import homeBorder from './../../component/home/home-border'
-// import echartOption from './../../component/home/echart-option.json'
 
 export default {
   name: 'home-chart',
   components: { homeBorder },
+  props: [ 'sort' ],
   data () {
     return {
-      chart_nav: {
-        nav: [
-          {title: '班线审批', active: true},
-          {title: '经营权', active: false},
-          {title: '等级评定', active: false}
-        ],
-        body: [
-          [
-            {id: 'chart0', class: 'column', time: true},
-            {id: 'chart1', class: 'column', time: false}
-          ],
-          [
-            {id: 'chart2', class: 'pie', time: false}
-          ],
-          [
-            {id: 'chart3', class: 'pie', time: false},
-            {id: 'chart4', class: 'pie', time: false}
-          ]
-        ]
-      },
-      chart: null
+      chart_nav: require('./../../component/echart/JSON/echart-nav' + this.sort + '.json'),
+      echart_option: require('./../../component/echart/JSON/echart-option.json'),
+      chart: Object
     }
   },
   mounted () {
     this.$nextTick(() => {
-      this.echarts('chart0')
+      $.each(this.chart_nav.nav, (item, nav) => {
+        nav.init = false
+      })
+      this.echart_click(0)
     })
   },
   methods: {
+    echart_init (key) {
+      const box = $('.chart-box li').eq(key).find('>div')
+      this.chart_nav.nav[key].init = true
+      for (let j = 0; j < box.length; j++) {
+        let id = this.chart_nav.body[key][j].id
+        let option = this.chart_nav.body[key][j].option
+        // echarts  init
+        this.chart[id] = echarts.init(box[j])
+        $.each(option, (item, data) => {
+          option[item] = typeof (data) === 'object' ? data : this.echart_option[data]
+        })
+        this.chart[id].setOption(option)
+      }
+    },
     echart_click (key) {
       for (let i = 0; i < this.chart_nav.nav.length; i++) {
         this.chart_nav.nav[i].active = false
-        this.chart_nav.body[i].active = false
       }
       this.chart_nav.nav[key].active = true
-      this.chart_nav.body[key].active = true
-
+      // 图表是否初始化
+      let init = this.chart_nav.nav[key].init
+      console.log(this.chart_nav.body)
+      if (!init) {
+        setTimeout(() => {
+          this.echart_init(key)
+        })
+      }
+      // 请求图表数据
       const box = $('.chart-box li').eq(key).find('>div')
       for (let j = 0; j < box.length; j++) {
-        let id = box[j].attr('id')
-        console.log(id)
-        // let echart = echarts.init(id)
+        let id = box[j].getAttribute('id')
+        this.$http.get('./static/data' + this.sort + '/' + id + '.json').then((m) => {
+          let data = m.data
+          this.chart[id].setOption(data)
+        })
       }
-      // for (let chart in chart_box) {
-      //   let id = chart.attr('id')
-      //   // let types = chart.attr('class')
-      //   // let style = chart_box.attr('class')
-      //   let echart = echarts.init(id)
-      //   echart.setOption({
-      //     title: echartOption.title,
-      //     tooltip: echartOption.tooltip,
-      //     grid: echartOption.grid,
-      //     xAxis: echartOption.xAxis,
-      //     yAxis: echartOption.yAxis,
-      //     series: echartOption.column_series
-      //   })
-      // }
     }
   }
 }

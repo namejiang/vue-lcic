@@ -1,0 +1,11 @@
+{
+    "nav": [
+        {"title": "等级评定", "active": false, "init":false}
+    ],
+    "body": [
+        [
+            {"id": "chart0", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}},
+            {"id": "chart1", "time": false, "type": "pie", "option": {"title": "title", "grid": "grid", "tooltip": "pie_tooltip", "legend": "legend", "series": "pie_series"}}
+        ]
+    ]
+}
