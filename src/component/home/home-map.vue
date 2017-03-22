@@ -22,9 +22,10 @@
         <!--车辆搜索-->
         <keep-alive>
           <div :is="search"
+              :search="true"
+              :homeNavs="homeNavs"
               @search="search_on" 
-              @checked="checked_on" 
-              @homeNavs="homeNavs_on">
+              @checked="checked_on" >
           </div>
         </keep-alive>
     </div>
@@ -80,9 +81,6 @@ export default {
     },
     checked_on (checked) {
       this.$emit('checked', checked)
-    },
-    homeNavs_on (fun) {
-      fun(this.homeNavs)
     }
   }
 }

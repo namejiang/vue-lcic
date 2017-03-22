@@ -1,14 +1,14 @@
 <template>
 	<div class="home">
 		<div class="container">
-			<home-border :border="true"></home-border>
 			<home-header></home-header>
+			<home-border :border="true"></home-border>
 			<div class="content">
-	    		<div class="content-map">
-	    			<!--start 边框样式-->
-	    			<home-border></home-border>
+				<div class="content-map">
+					<!--start 边框样式-->
+					<home-border></home-border>
 					<!--地图-->
-	    		<home-map 
+					<home-map 
 						@checked="checked_parent"  
 						@checkedParent="checked_child">
 					</home-map>
@@ -31,11 +31,11 @@
 							</label>
 						</div>
 					</div>
-	    			<!--hotspot 实时信息-->
-						<div :is="hotspot" :sort="sort"></div>
-					</div>	
-	    		<!--start 图表信息-->
-				  <div :is="echart" :sort="sort"></div>
+					<!--hotspot 实时信息-->
+					<div :is="hotspot" :sort="sort"></div>
+				</div>	
+				<!--start 图表信息-->
+				<div :is="echart" :sort="sort"></div>
 			</div>
 		</div>
 	</div>

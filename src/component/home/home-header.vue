@@ -6,8 +6,8 @@
         <div class="title">
             <p class="city"><span>26°34′ 51.14″ N 106°42′ 30.69″E</span> 中国 贵州省 贵阳市</p>
             <p class="time">
-                <strong class="year">0000年00月00日</strong>  
-                <span> 时间 <stong class='time'>00:00</stong> </span> 
+                <strong class="year">{{ year_time }}</strong>  
+                <span style="padding-left:10px;"> 时间 <strong class='time'>{{ hours_time }}</strong></span> 
             </p>
         </div>
     </div>
@@ -15,7 +15,34 @@
 
 <script>
 export default {
-  name: 'home-header'
+  name: 'home-header',
+  data () {
+    return {
+      date_time: new Date()
+    }
+  },
+  mounted () {
+    setInterval(() => {
+      this.date_time = new Date()
+    }, 1000)
+  },
+  computed: {
+    year_time () {
+      return this.date_time.getFullYear() + ' 年 ' + this.Etime((this.date_time.getMonth() + 1)) + ' 月 ' + this.Etime(this.date_time.getDate()) + ' 日'
+    },
+    hours_time () {
+      return this.Etime(this.date_time.getHours()) + ':' + this.Etime(this.date_time.getMinutes()) + ':' + this.Etime(this.date_time.getSeconds())
+    }
+  },
+  methods: {
+    Etime (val) {
+      if (val < 10) {
+        return '0' + val
+      } else {
+        return val
+      }
+    }
+  }
 }
 </script>
 

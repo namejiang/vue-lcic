@@ -1,6 +1,6 @@
 <template>
-    <div class="home-hotspot">
-        <div class="hotspot">
+    <div class="home-hotspot" >
+        <div class="hotspot" :class="{active:left}">
             <div class="hotspot-item" >
                 <div class="hotspot-title">执法热点<span></span></div>
                 <div class="hotspot-body">
@@ -24,14 +24,24 @@
                 </div>
             </div>
             <!--隐藏-->
-            <div class="Hotspot-togger"></div>
+            <div class="Hotspot-togger" :class="{active:left}" @click="togger"></div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-  name: 'home-hotspot'
+  name: 'home-hotspot',
+  data () {
+    return {
+      left: false
+    }
+  },
+  methods: {
+    togger () {
+      this.left = !this.left
+    }
+  }
 }
 </script>
 
@@ -52,6 +62,9 @@ export default {
     width: 100%;
     height: 100%;
     position: relative;
+}
+.home-hotspot .hotspot.active {
+    margin-left: calc(-100% + 32px)
 }
 .home-hotspot .hotspot-item{
 	float: left;
@@ -130,5 +143,8 @@ export default {
     text-align: center;
     border-radius: 0px 5px 5px 0px;
     opacity: 0.5;
+}
+.home-hotspot .Hotspot-togger.active{
+    right: 0px;
 }
 </style>

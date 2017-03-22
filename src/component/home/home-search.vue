@@ -1,31 +1,33 @@
 <template>
-    <div class="home-search" @click="mapSearch()">
-        <div class="details_content" @click.stop="doThis">
+    <div class="home-search" @click.stop="Close()">
+        <div class="details_content"  @click.stop>
             <div id="details">
-                <div id="search">
+                <div id="search" :class="{show:search}">
                     <div class="search-body">
-                        <span class="item" id='address'>地名</span>
-                        <span class="item" id='proprietor'>业户</span>
-                        <span class="item" id='vehicle_card'>车牌号</span>
-                        <span class="item" id='fence'>围栏选取</span>
-                        <input type="text" name="keywords">
+                        <span class="item"
+                            v-for="(nav, key) in items" 
+                            :id="nav.id"
+                            :class="{active: nav.active}"  
+                            @click="search_tagger(key)">
+                            {{ nav.title }}</span>
+                        <input type="text" :name="[input]">
                         <button>搜索</button>
                         <div class="details_navHover"></div>
                         <div class="result"></div>
                         <div class="hierarchy">
                             <span>搜索层级</span>
                             <label v-for="(nav, key) in homeNavs">
-                                <input type="checkbox" :checked="nav.active" @click="checked_click(key)">
+                                <input type="checkbox" :checked="nav.active" @click.stop="checked_click(key)">
                                 {{ nav.title }}
                             </label>
                         </div>
                     </div>
                 </div>
-                <div id="details_home">
+                <div id="details_home" :class="{height:search}">
                     <div class="details_nav"></div>
                     <div class="details_body"></div>
                 </div>
-                <div class="details_del" @click="mapSearch()"></div>
+                <div class="details_del" @click="Close()"></div>
             </div>
         </div>
     </div>
@@ -36,27 +38,30 @@ export default {
   name: 'home-search',
   data () {
     return {
-      homeNavs: Array
+      items: [
+        {active: true, id: 'address', title: '地名'},
+        {active: false, id: 'proprietor', title: '业户'},
+        {active: false, id: 'vehicle_card', title: '车牌号'},
+        {active: false, id: 'fence', title: '围栏选取'}
+      ],
+      input: 'address'
     }
   },
-//   props: [ 'homeNavs' ],
-  mounted () {
-    this.init()
-  },
+  props: [ 'homeNavs', 'search' ],
   methods: {
-    init () {
-      this.$emit('homeNavs', (homeNavs) => {
-        console.log(homeNavs)
-        this.homeNavs = homeNavs
-        console.log(this.homeNavs)
-      })
-    },
-    mapSearch () {
+    Close () {
       this.$emit('search', false)
     },
     checked_click (key) {
       this.homeNavs[key].checkbox = !this.homeNavs[key].checkbox
       this.$emit('checked', {key: key, active: this.homeNavs[key].checkbox})
+    },
+    search_tagger (key) {
+      for (let nav of this.items) {
+        nav.active = false
+      }
+      this.items[key].active = true
+      this.input = this.items[key].id
     }
   }
 }
@@ -95,6 +100,10 @@ export default {
 	background: #50678e;
     padding: 20px 0px;
     height: 160px;
+    display: noen;
+}
+#details #search.show{
+    display: block !important;
 }
 #details #search .search-body{
 	position: relative;
@@ -109,7 +118,7 @@ export default {
 	cursor: pointer;
     float: left;
 }
-#details #search .search-body span.item:first-child{
+#details #search .search-body span.item.active{
 	background-color: #2d9cb6;
 }
 #details #search .search-body input[type="text"]{
@@ -179,6 +188,9 @@ export default {
     position: relative;
     height: 100%;
     overflow: hidden;
+}
+.home-search #details_home.height{
+    height: calc(100% - 160px);
 }
 .home-search .details_nav ul{
 	width: calc(100% + 4px);
