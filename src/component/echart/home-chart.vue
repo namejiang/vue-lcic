@@ -75,9 +75,10 @@ export default {
         this.chart_nav.nav[i].active = false
       }
       this.chart_nav.nav[key].active = true
+      this.$emit('change', 'hehe')
+      this.$emit('changes', 'hehe')
       // 图表是否初始化
       let init = this.chart_nav.nav[key].init
-      console.log(this.chart_nav.body)
       if (!init) {
         setTimeout(() => {
           this.echart_init(key)
@@ -87,10 +88,11 @@ export default {
       const box = $('.chart-box li').eq(key).find('>div')
       for (let j = 0; j < box.length; j++) {
         let id = box[j].getAttribute('id')
-        this.$http.get('./static/data' + this.sort + '/' + id + '.json').then((m) => {
-          let data = m.data
-          this.chart[id].setOption(data)
-        })
+        this.$http.get('./static/data' + this.sort + '/' + id + '.json')
+          .then((m) => {
+            let data = m.data
+            this.chart[id].setOption(data)
+          })
       }
     }
   }

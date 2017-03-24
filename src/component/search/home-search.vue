@@ -47,14 +47,14 @@ export default {
       input: 'address'
     }
   },
-  props: [ 'homeNavs', 'search' ],
+  props: [ 'homeNavs', 'search', 'Event' ],
   methods: {
     Close () {
       this.$emit('search', false)
     },
     checked_click (key) {
       this.homeNavs[key].checkbox = !this.homeNavs[key].checkbox
-      this.$emit('checked', {key: key, active: this.homeNavs[key].checkbox})
+      this.Event.$emit('search', {key: key, active: this.homeNavs[key].checkbox})
     },
     search_tagger (key) {
       for (let nav of this.items) {
