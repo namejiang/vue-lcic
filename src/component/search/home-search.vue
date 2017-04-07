@@ -100,7 +100,7 @@ export default {
 	background: #50678e;
     padding: 20px 0px;
     height: 160px;
-    display: noen;
+    display: none;
 }
 #details #search.show{
     display: block !important;

@@ -73,7 +73,9 @@ export default {
       }
     })
     this.$nextTick(() => {
-      this.homeNav_click(0)
+      setTimeout(() => {
+        this.homeNav_click(0)
+      }, 1000)
     })
   },
   computed: {

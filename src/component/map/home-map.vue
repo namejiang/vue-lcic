@@ -9,13 +9,15 @@
           :zoom="map.zoom"
           @moving="mapMoving"
           @moveend="mapMoving"
-          @zoomend="mapMoving">
+          @zoomend="mapMoving"
+          @ready="ready">
             <bm-scale anchor="BMAP_ANCHOR_BOTTOM_RIGHT"/>
             <bm-polygon 
               :path="map.polylinePath" 
               stroke-color="none"
               fill-color="rgba(25,24,55,0.7)"
-              :stroke-opacity="1"/>   
+              :stroke-opacity="1"
+              @click="infoWindowtaggar(false)"/>   
             <bm-polygon 
               :path="map.BpolylinePath" 
               stroke-color="#fff"
@@ -30,19 +32,19 @@
               :position="{lng: label.lng, lat: label.lat}" 
               :labelStyle="{color: 'rgba(255,255,255,0.6)', background: 'transparent',border:'none', fontSize : '12px'}" 
               :title="label.title"/>
-            <div v-for="(data, key) in markers">
-              <bm-marker 
-                v-for="(mk, id) in data"
-                :massClear="true"
-                :position="{lng: mk.lng, lat: mk.lat}" 
-                @click="marker_click(this)"></bm-marker>
-            </div>
-            
-            
+            <bm-info-window 
+              :position="infoWindow.position" 
+              :title="infoWindow.title" 
+              :show="infoWindow.show">
+                <p v-text="infoWindow.contents"></p>
+                <div>
+                  <span @click="mapSearch(false)">详情</span>
+                </div>
+            </bm-info-window>
         </baidu-map>
         <!--地图事件-->
         <div class="map-event">
-            <span class="search" title="搜索" @click="mapSearch()">搜索</span>
+            <span class="search" title="搜索" @click="mapSearch(true)">搜索</span>
             <span class="reset" title="复位" @click="mapReset(10)"></span>
             <span class="zoom-plus" @click="mapZoom(0)"></span>
             <span class="zoom-reduce" @click="mapZoom(1)"></span>
@@ -50,8 +52,8 @@
         <!--历史轨迹时间选择-->
         <home-time></home-time>
         <!--车辆搜索-->
-        <div :is="search"
-            :search="true"
+        <div :is="infoSearch.info"
+            :search="infoSearch.search"
             :Event="Event"
             :homeNavs="homeNavs"
             @search="search_taggar" >
@@ -60,8 +62,8 @@
 </template> 
 
 <script>
-// import $ from 'jquery'
-import map from 'vue-baidu-map'
+import $ from 'jquery'
+// import map from 'vue-baidu-map'
 import homeSearch from './../../component/search/home-search'
 import homeTime from './../../component/home/home-time'
 import mapOption from './../../component/map/map_option.json'
@@ -72,6 +74,7 @@ export default {
   data () {
     return {
       theme: mapOption.theme,
+      Map: null,
       map: {
         label: mapOption.label,
         polylinePath: mapOption.polylinePath,
@@ -82,41 +85,41 @@ export default {
         },
         zoom: 10
       },
-      markers: {
-        law_people: []
+      markers: {},
+      infoWindow: {
+        show: false,
+        title: 'Info Window Title',
+        position: {lng: 106.706, lat: 26.605},
+        contents: 'Lgna aliqua.'
       },
-      markerimg: {
-        law_people: './../../static/map/2_11.png',
-        law_vehicle: './../../assets/map/car.png',
-        law_unit: './../../../assets/map/2_13.png',
-        passenger_vehicle: './../../assets/map/2_12.png',
-        danger_freight_vehicle: './../../assets/map/2_12.png',
-        tourist_vehicle: './../../assets/map/2_12.png',
-        taxi: './../../assets/map/2_12.png',
-        training_vehicle: './../../assets/map/2_12.png',
-        passenger_station: './../../assets/map/2_13.png'
+      infoSearch: {
+        search: false,
+        info: Object
       },
-      search: Object,
       homeNavs: Array
     }
   },
   props: [ 'Event' ],
   mounted () {
-    this.Event.$on('marker', (url, boolean) => {
-      if (boolean) {
-        this.$http.get('./static/mapdata/' + url + '.json')
-          .then((m) => {
-            let data = m.data.data
-            this.markers[url] = data
-          })
-      } else {
-        map.clearOverlays()
-        this.markers[url] = []
-      }
-      console.log(this.markers)
+    this.$nextTick(() => {
+      this.Event.$on('marker', (url, boolean) => {
+        if (boolean) {
+          this.$http.get('./static/mapdata/' + url + '.json')
+            .then((m) => {
+              let datas = m.data.data
+              this.addMarker(datas, url)
+            })
+        } else {
+          this.removeMarker(url)
+        }
+      })
     })
   },
   methods: {
+    ready (Map) {
+      this.Map = Map
+      this.marker_click()
+    },
     mapMoving (e) {
       const {lng, lat} = e.target.getCenter()
       this.map.center = {lng, lat}
@@ -135,17 +138,42 @@ export default {
         this.map.zoom--
       }
     },
-    mapSearch () {
+    mapSearch (search) {
       this.Event.$emit('search', (homeNavs) => {
         this.homeNavs = homeNavs
       })
-      this.search = homeSearch
+      this.infoSearch.search = search
+      this.infoSearch.info = homeSearch
     },
     search_taggar (search) {
-      this.search = search
+      this.infoSearch.info = search
     },
-    marker_click (s) {
-      console.log(s)
+    addMarker (datas, url) {
+      $.each(datas, (key, data) => {
+        let Icon = new this.Map.BMap.Icon('/static/img/2_11.3b1ff8c.png', new this.Map.BMap.Size(24, 24))
+        let marker = new this.Map.BMap.Marker({lng: data.lng, lat: data.lat}, {icon: Icon})
+        // marker.attr('name', '{lng: data.lng, lat: data.lat}')
+        this.Map.map.addOverlay(marker)
+        datas[key] = marker
+      })
+      this.markers[url] = datas
+    },
+    removeMarker (url) {
+      $.each(this.markers[url], (key, marker) => {
+        this.Map.map.removeOverlay(marker)
+      })
+      this.markers[url] = []
+    },
+    marker_click () {
+      $('.map').delegate('.BMap_Marker', 'click', (e) => {
+        console.log(e)
+        this.infoWindow.position = e.point
+        this.infoWindow.show = true
+        // return false
+      })
+    },
+    infoWindowtaggar (show) {
+      this.infoWindow.show = show
     }
   }
 }
